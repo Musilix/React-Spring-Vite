@@ -1,0 +1,14 @@
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.user-info input {
+  margin: 5px;
+  padding: 5px;
+
+
+}
