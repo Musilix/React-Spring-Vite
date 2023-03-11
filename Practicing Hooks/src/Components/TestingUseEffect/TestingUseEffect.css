@@ -1,3 +1,9 @@
+h2 {
+  margin: 0;
+  padding: 0;
+}
+
+
 .user-info {
   display: flex;
   flex-direction: column;
@@ -9,6 +15,22 @@
 .user-info input {
   margin: 5px;
   padding: 5px;
+}
+
+.user-info-fields {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  padding: 15px;
+  margin: 15px 5px;
 
 
+}
+
+.user-info-fields input,
+.user-info-fields button {
+  margin: 5px 0px;
+  padding: 15px;
 }

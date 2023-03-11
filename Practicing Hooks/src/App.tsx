@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import './App.css'
-import reactLogo from './assets/react.svg'
 import TestingUseEffect from './Components/TestingUseEffect/TestingUseEffect'
 
 function App() {

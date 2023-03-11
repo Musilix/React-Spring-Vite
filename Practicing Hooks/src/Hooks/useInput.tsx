@@ -4,7 +4,7 @@ import { useState } from "react";
 // TS will infer. and w/ that infer, it will cause strange behavior... we should explicitly write
 // the return type or return our list "as const" to bypass this... why the fuck does it's inference
 // cause this behavior though???
-export default function useInput(initialState: string): any[]{
+export default function useInput(initialState: string = ""): any[]{
   const [input, setInput] = useState(initialState);
 
   const handleChange = (e: any) => {
@@ -12,6 +12,7 @@ export default function useInput(initialState: string): any[]{
   };
 
   const reset = () => {
+    console.log("resetting...");
     setInput('');
   };
 
