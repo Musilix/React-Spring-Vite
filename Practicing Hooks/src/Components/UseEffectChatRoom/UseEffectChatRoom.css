@@ -1,0 +1,8 @@
+#chatroom-wrap {
+
+  border: 1px solid mediumpurple;
+  padding: 25px;
+  border-radius: 5px;
+  /* background-color: #1a1a1a; */
+  box-shadow: #d1a7ff 1px 1px 11px -1px;
+}

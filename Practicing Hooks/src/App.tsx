@@ -1,15 +1,17 @@
-import { useState } from 'react'
-import './App.css'
-import TestingUseEffect from './Components/TestingUseEffect/TestingUseEffect'
+import { useState } from "react";
+import "./App.css";
+import TestingUseEffect from "./Components/TestingUseEffect/TestingUseEffect";
+import UseEffectChatRoomWrap from "./Components/UseEffectChatRoomWrap/UseEffectChatRoomWrap";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   return (
     <div className="App">
-      <TestingUseEffect details = {{user: "Testy", favoriteCandy: "jolly ranchers"}}></TestingUseEffect>
+      {/* <TestingUseEffect details = {{user: "Testy", favoriteCandy: "jolly ranchers"}}></TestingUseEffect> */}
+      <UseEffectChatRoomWrap />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
