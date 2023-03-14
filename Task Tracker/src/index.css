@@ -12,6 +12,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --primary-glow: radial-gradient(rgba(1, 65, 255, .4), rgba(1, 65, 255, 0));
+  --secondary-glow: linear-gradient(to bottom right, rgba(1, 65, 255, 0), rgba(1, 65, 255, 0), rgba(1, 65, 255, .3));
 }
 
 a {
@@ -37,6 +42,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  background: linear-gradient(to bottom, #242424, rgb(var(--background-end-rgb)), #242424);
 }
 
 h1 {
@@ -54,6 +61,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  z-index: 2;
 }
 
 button:hover {

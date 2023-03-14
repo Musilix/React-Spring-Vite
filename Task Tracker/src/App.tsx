@@ -1,5 +1,12 @@
 import { animated, useTransition } from "@react-spring/web";
-import { useReducer, useState } from "react";
+import {
+  MutableRefObject,
+  ReactHTMLElement,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import "./App.css";
 
 interface Task {
@@ -52,8 +59,22 @@ function App() {
   };
 
   const [baseGoal, dispatch] = useReducer(reducer, { amt: 5 });
-
   const transition = useTransition(baseGoal.amt, ticker);
+  const clickerVisualRef = useRef<HTMLObjectElement>(null);
+
+  useEffect(() => {
+    if (clickerVisualRef.current) {
+      if (baseGoal.amt === 0) {
+        clickerVisualRef.current.style.backgroundColor = "rgb(0 255 43 / .5%)";
+        clickerVisualRef.current.style.filter =
+          "invert(0) drop-shadow(rgba(0, 255, 43, 1) 0px 0px 0.3rem)";
+      } else {
+        clickerVisualRef.current.style.backgroundColor = "rgb(0 255 43 / 0%)";
+        clickerVisualRef.current.style.filter =
+          "invert(0) drop-shadow(rgba(0, 255, 43, .1) 0px 0px 0.3rem);";
+      }
+    }
+  }, [baseGoal.amt]);
 
   const handleClick = (type: string | void) => {
     dispatch({ type: type });
@@ -61,7 +82,7 @@ function App() {
 
   return (
     <div className="App">
-      <section id="tracker-wrap">
+      <section id="tracker-wrap" ref={clickerVisualRef}>
         <div id="spring-wrap">
           {transition((style, idx) => {
             return (
