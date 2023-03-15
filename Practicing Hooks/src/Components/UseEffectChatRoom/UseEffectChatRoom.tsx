@@ -2,24 +2,22 @@ import { useEffect, useState } from "react";
 import { createChatRoomConnection } from "../../Services/ChatRoom";
 import "./UseEffectChatRoom.css";
 
-export default function UseEffectChatroom(props: any) {
+export default function UseEffectChatroom({ roomId }: any) {
   const [serverUrl, setServerUrl] = useState("http://localhost:8080");
 
   // use our chatroom svc to connect to the pseudo chatroom on mount + whenever the roomId or serverUrl (for some reason) changes
   useEffect(() => {
     // setup logic
-    const chatRoomConn = createChatRoomConnection(serverUrl, props.roomId);
+    const chatRoomConn = createChatRoomConnection(serverUrl, roomId);
     try {
       chatRoomConn.connect();
     } catch (e) {
-      console.error(
-        `There was an issue connecting to the ${props.roomId} room`
-      );
+      console.error(`There was an issue connecting to the ${roomId} room`);
     }
 
     // cleanup logic
     return () => chatRoomConn.disconnect();
-  }, [props.roomId, serverUrl]);
+  }, [roomId, serverUrl]);
 
   return (
     <>
@@ -34,7 +32,7 @@ export default function UseEffectChatroom(props: any) {
               borderRadius: "5px",
             }}
           >
-            {props.roomId}
+            {roomId}
           </span>{" "}
           room! You cannot speak though, sorry.
         </h2>

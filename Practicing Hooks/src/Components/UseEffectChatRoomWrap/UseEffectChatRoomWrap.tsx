@@ -12,7 +12,7 @@ export default function UseEffectChatRoomWrap() {
         <div className="chatroom-block">
           <p>
             Welcome to the chat hub. Go ahead and choose the room you'd like to
-            join
+            join!
           </p>
 
           {!showRoom && (
