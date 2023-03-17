@@ -15,7 +15,8 @@
     "build:prod": "tsc && vite build",
     "build:prisma": "prisma generate",
     "migrate:gen": "prisma migrate dev --create-only",
-    "migrate:run": "",
+    "migrate:run": "prisma migrate dev",
+    "migrate:prod": "prisma migrate deploy",
     "migrate:clear": "prisma migrate reset"
   },
   "dependencies": {
