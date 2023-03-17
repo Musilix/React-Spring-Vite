@@ -10,7 +10,8 @@ datasource db {
 model Users {
   id    Int     @id @default(autoincrement())
   username String  @unique @db.VarChar(255)
+  currentGoal Int @default(0)
   count  Int
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
