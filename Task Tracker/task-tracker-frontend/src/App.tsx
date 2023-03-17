@@ -1,3 +1,4 @@
+import { Users } from "@prisma/client";
 import { animated, useTransition } from "@react-spring/web";
 import {
   MutableRefObject,
@@ -9,7 +10,14 @@ import {
 } from "react";
 import "./App.css";
 import TaskReducer from "./Reducers/TaskReducer";
-import { totalJobsHelper } from "./Services/UsersService";
+import {
+  decrementTaskGoal,
+  getUser,
+  incrementTaskGoal,
+  intitializeTaskGoal,
+  resetTaskGoal,
+  setTotalJobs,
+} from "./Services/UsersService";
 
 const tickerUp = {
   keys: null,
@@ -27,6 +35,7 @@ const tickerDown = {
   leave: { opacity: 0, top: -100 },
 };
 
+// TODO: it's getting bullky in here. We may want to start modularizing this ish
 function App() {
   const reducer = TaskReducer;
   const [ticker, setTicker] = useState(tickerUp);
@@ -41,15 +50,14 @@ function App() {
 
   // Initialize jobs applied for on component load
   useEffect(() => {
-    async function getTotalJobsApplied() {
-      const totalJobsApplied = await fetch(`/.netlify/functions/getUser`)
-        .then((res) => res.json())
-        .then((data) => data.count);
+    async function getUserData() {
+      const User: Users = await getUser();
 
-      setTotalJobsApplied(totalJobsApplied);
+      setTotalJobsApplied(User.count);
+      intitializeTaskGoal(dispatch, User.currentGoal);
     }
 
-    getTotalJobsApplied();
+    getUserData();
   }, []);
 
   // Add extra styling for when daily tasks are completed
@@ -68,12 +76,12 @@ function App() {
 
     if (taskAction.type === "dec") {
       if (baseGoal.amt > 0) {
-        console.log("calling api");
-        totalJobsHelper(totalJobsApplied, setTotalJobsApplied);
+        setTotalJobs(totalJobsApplied, setTotalJobsApplied);
       }
     }
   }, [baseGoal.amt]);
 
+  // TODO: Refactor and abstract out some of this logic... or break it down completely
   const handleClick = (type: string) => {
     // TODO: find out how to incorporate this into the useEffect hook without the strange behavior explained below...
     // The behavior of this is strange if i put the check in useEffect, as with the case where we go from adding tasks to removing one, it will still use the tickerUp settings for the decerement removal
@@ -84,19 +92,26 @@ function App() {
     } else if (taskAction.type === "dec") {
       ticker !== tickerDown ? setTicker(tickerDown) : "";
     }
-
     setTaskAction({ type });
-    dispatch({ type: type });
+
+    // Real DB connectors for not updating UI, but updating the real data
+    if (type === "dec") {
+      decrementTaskGoal(dispatch, baseGoal.amt);
+    } else if (type === "inc") {
+      incrementTaskGoal(dispatch, baseGoal.amt);
+    } else if (type === "reset") {
+      resetTaskGoal(dispatch);
+    }
   };
 
   return (
     <div className="App">
       <section id="tracker-wrap" ref={clickerVisualRef}>
         <div id="spring-wrap">
-          {transition((style, idx) => {
+          {transition((style, taskGoalAmt) => {
             return (
               <animated.div style={{ ...style, position: "absolute" }}>
-                <h2>{idx}</h2>
+                <h2>{taskGoalAmt}</h2>
               </animated.div>
             );
           })}
