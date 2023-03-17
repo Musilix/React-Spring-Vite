@@ -5,14 +5,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "preview:prod": "netlify deploy",
+    "preview:vite": "vite preview",
+    "comment": "Netlify dev command is necessary here, as the vite dev command doesnt build out our netlify serverless functions that we need",
     "dev:netlify": "netlify dev",
+    "preview:netlify": "netlify deploy",
     "possible-new-dev": "nodemon dist/index.js",
     "possible-new-watch": "vite build --watch",
     "build-old": "tsc && vite build",
     "build:prod": "tsc && vite build",
-    "build:prisma": "prisma generate"
+    "build:prisma": "prisma generate",
+    "migrate:gen": "prisma migrate dev --create-only",
+    "migrate:run": "",
+    "migrate:clear": "prisma migrate reset"
   },
   "dependencies": {
     "@netlify/functions": "^1.4.0",

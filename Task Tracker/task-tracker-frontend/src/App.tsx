@@ -68,6 +68,7 @@ function App() {
 
     if (taskAction.type === "dec") {
       if (baseGoal.amt > 0) {
+        console.log("calling api");
         totalJobsHelper(totalJobsApplied, setTotalJobsApplied);
       }
     }
