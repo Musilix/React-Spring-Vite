@@ -12,6 +12,10 @@ const TaskReducer = (state: any, action: any) => {
     return {
       amt: 5,
     };
+  } else if (action.type === "initialize") {
+    return {
+      amt: 0,
+    };
   } else {
     return {
       amt: 0,
