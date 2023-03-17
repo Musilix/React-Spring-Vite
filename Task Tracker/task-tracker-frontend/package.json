@@ -1,16 +1,18 @@
 {
   "name": "task-tracker-frontend",
   "version": "1.0.0",
+  "main": "assets/index.js",
   "scripts": {
-    "start": "vite preview",
     "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "preview:prod": "netlify deploy",
     "dev:netlify": "netlify dev",
     "possible-new-dev": "nodemon dist/index.js",
     "possible-new-watch": "vite build --watch",
-    "build": "tsc && vite build",
+    "build-old": "tsc && vite build",
     "build:prod": "tsc && vite build",
-    "build:prisma": "prisma generate",
-    "preview": "vite preview"
+    "build:prisma": "prisma generate"
   },
   "dependencies": {
     "@netlify/functions": "^1.4.0",

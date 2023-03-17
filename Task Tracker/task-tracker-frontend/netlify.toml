@@ -10,7 +10,9 @@
 
   functions = "functions/"
 
-  publish = "public/"
+  # IM SO RIDICULOUS
+  # I FORGOT I HAD THIS SET TO PUBLIC, BUT IT NEEDED TO BE DIST, SO I KEPT GETTING FALSE 404s... smh, fixed now. DONT FORGET THIS
+  publish = "dist/"
   
 # [functions]
 #         node_bundler = "esbuild"
