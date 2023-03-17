@@ -28,11 +28,10 @@ const tickerDown = {
 };
 
 function App() {
+  const reducer = TaskReducer;
   const [ticker, setTicker] = useState(tickerUp);
   const [totalJobsApplied, setTotalJobsApplied] = useState(0);
-
-  const reducer = TaskReducer;
-
+  const [taskAction, setTaskAction] = useState({ type: "" });
   // Handling adding, removing, or resetting tasks
   const [baseGoal, dispatch] = useReducer(reducer, { amt: 5 });
 
@@ -66,29 +65,27 @@ function App() {
           "invert(0) drop-shadow(rgba(0, 255, 43, 0.1) 0px 0px 0.3rem)";
       }
     }
-  }, [baseGoal.amt]);
 
-  const handleClick = (type: string | void) => {
-    dispatch({ type: type });
-
-    // Refactor Incoming - Find a better pattern for setting these state variables on button click
-    // TODO: move this logic to the useEffect hook some how
-    // This work is definitely more fit for something like the useEffect hook, but currently i NEED the type information to conditionally update the ticker state and totalJobsApplied state properly
-    // Maybe theres a way to accomplish this while using useEffect?
-    if (type === "inc") {
-      ticker !== tickerUp ? setTicker(tickerUp) : "";
-    } else if (type === "dec") {
-      ticker !== tickerDown ? setTicker(tickerDown) : "";
-
-      // TODO: add a column for usrs currTaskGoal (baseGoal)
-      // We only need to update the count in the DB if we are removing a task (i.e. we finished it) and the current tasks are greater than 0
-      // If not, we can just keep clicking the remove tasks button even when we have 0 tasks and it will update the DB... a user COULD always alter the code to
-      // remove this check for any reason, but currently I have no clue how to keep a user from completing tasks when they have no tasks. I think we need to keep track
-      // of curr task amt in the DB as well...
+    if (taskAction.type === "dec") {
       if (baseGoal.amt > 0) {
         totalJobsHelper(totalJobsApplied, setTotalJobsApplied);
       }
     }
+  }, [baseGoal.amt]);
+
+  const handleClick = (type: string) => {
+    // TODO: find out how to incorporate this into the useEffect hook without the strange behavior explained below...
+    // The behavior of this is strange if i put the check in useEffect, as with the case where we go from adding tasks to removing one, it will still use the tickerUp settings for the decerement removal
+    // only after then, if I decrement again will it properly use the tickerDown settings instead. That's because it doesnt actively update the ticker direction setting until AFTER the value itself has update
+    // this means that it will use the previously set ticker direction setting, and THEN update the ticker setting properly... This is the only solution I have for this now.
+    if (taskAction.type === "dec") {
+      ticker !== tickerUp ? setTicker(tickerUp) : "";
+    } else if (taskAction.type === "dec") {
+      ticker !== tickerDown ? setTicker(tickerDown) : "";
+    }
+
+    setTaskAction({ type });
+    dispatch({ type: type });
   };
 
   return (
@@ -110,14 +107,14 @@ function App() {
       </section>
 
       <section id="tracker-list-form">
-        <button onClick={() => handleClick("inc")}>Add To Goal</button>
+        <button onClick={() => handleClick("inc")}>Add Task</button>
         <button
           onClick={() => handleClick("dec")}
           disabled={baseGoal.amt === 0}
         >
-          Mark a Goal Done
+          Mark a Task Done
         </button>
-        <button onClick={() => handleClick("reset")}>Reset Goal</button>
+        <button onClick={() => handleClick("reset")}>Reset Tasks</button>
       </section>
     </div>
   );
