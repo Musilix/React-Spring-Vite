@@ -4,14 +4,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      =  env("DB_COMPOUND_URL")
+  url      = env("DB_COMPOUND_URL")
 }
 
 model Users {
-  id   String @id @default(dbgenerated("uuid_generate_v4()"))
-  username String  @unique @db.VarChar(255)
-  currentGoal Int @default(0)
-  count  Int @default(0)
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  username    String    @unique @db.VarChar(255)
+  count       Int       @default(0)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  currentGoal Int       @default(0)
+  id          String    @id @default(dbgenerated("uuid_generate_v4()"))
 }

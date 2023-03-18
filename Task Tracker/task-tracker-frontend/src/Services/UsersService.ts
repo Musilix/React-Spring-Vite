@@ -24,9 +24,12 @@ const setTotalJobs = async (
 };
 
 const incrementTaskGoal = async (dispatch: Function, currTaskGoal: number) => {
-  await fetch(`/.netlify/functions/setUser?taskGoal=${currTaskGoal + 1}`, {
-    method: "POST",
-  })
+  await fetch(
+    `/.netlify/functions/setUserTaskGoal?taskGoal=${currTaskGoal + 1}`,
+    {
+      method: "POST",
+    }
+  )
     .then(() => {
       dispatch({ type: "inc" });
     })

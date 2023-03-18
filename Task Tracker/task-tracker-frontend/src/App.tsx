@@ -39,10 +39,12 @@ const tickerDown = {
 function App() {
   const reducer = TaskReducer;
   const [ticker, setTicker] = useState(tickerUp);
-  const [totalJobsApplied, setTotalJobsApplied] = useState(0);
+  const [totalJobsApplied, setTotalJobsApplied]: [number | string, Function] =
+    useState("...");
   const [taskAction, setTaskAction] = useState({ type: "" });
   // Handling adding, removing, or resetting tasks
   const [baseGoal, dispatch] = useReducer(reducer, { amt: 5 });
+  const [isLoading, setIsLoading] = useState(true);
 
   // State for React Spring Animations
   const transition = useTransition(baseGoal.amt, ticker);
@@ -56,6 +58,7 @@ function App() {
       // Set total jobs applied to + current task goal amount
       setTotalJobsApplied(User.count);
       intitializeTaskGoal(dispatch, User.currentGoal);
+      setIsLoading(false);
     }
 
     getUserData();
@@ -107,32 +110,45 @@ function App() {
 
   return (
     <div className="App">
-      <section id="tracker-wrap" ref={clickerVisualRef}>
-        <div id="spring-wrap">
-          {transition((style, taskGoalAmt) => {
-            return (
-              <animated.div style={{ ...style, position: "absolute" }}>
-                <h2>{taskGoalAmt}</h2>
-              </animated.div>
-            );
-          })}
-        </div>
-        <p>Tasks Remaining</p>
-        <p style={{ fontSize: "10px" }}>
-          You've applied for {totalJobsApplied} jobs
-        </p>
-      </section>
+      {isLoading ? (
+        // TODO: put in seperate component
+        <>
+          <section id="loading-wrap">
+            <div>
+              <img src="/loadinggraphic.png" alt="Loading Page Graphic"></img>
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          <section id="tracker-wrap" ref={clickerVisualRef}>
+            <div id="spring-wrap">
+              {transition((style, taskGoalAmt) => {
+                return (
+                  <animated.div style={{ ...style, position: "absolute" }}>
+                    <h2>{taskGoalAmt}</h2>
+                  </animated.div>
+                );
+              })}
+            </div>
+            <p>Tasks Remaining</p>
+            <p style={{ fontSize: "10px" }}>
+              You've applied for {totalJobsApplied} jobs
+            </p>
+          </section>
 
-      <section id="tracker-list-form">
-        <button onClick={() => handleClick("inc")}>Add Task</button>
-        <button
-          onClick={() => handleClick("dec")}
-          disabled={baseGoal.amt === 0}
-        >
-          Mark a Task Done
-        </button>
-        <button onClick={() => handleClick("reset")}>Reset Tasks</button>
-      </section>
+          <section id="tracker-list-form">
+            <button onClick={() => handleClick("inc")}>Add Task</button>
+            <button
+              onClick={() => handleClick("dec")}
+              disabled={baseGoal.amt === 0}
+            >
+              Mark a Task Done
+            </button>
+            <button onClick={() => handleClick("reset")}>Reset Tasks</button>
+          </section>
+        </>
+      )}
     </div>
   );
 }
