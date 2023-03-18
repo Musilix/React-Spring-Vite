@@ -4,7 +4,7 @@
   "main": "assets/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run prisma:resolveproddiff && vite build",
     "preview:vite": "vite preview",
     "comment": "Netlify dev command is necessary here, as the vite dev command doesnt build out our netlify serverless functions that we need",
     "dev:netlify": "netlify dev",
@@ -16,7 +16,7 @@
     "build:prisma": "prisma generate",
     "prisma:getproddiff": "prisma migrate diff --from-url postgresql://postgres:Cookie560688Ks!@db.yclvkgfoiqpaijvzxlix.supabase.co:5432/postgres --to-schema-datamodel prisma/schema.prisma --script > forward.sql",
     "prisma:applyproddiff": "prisma db execute --url postgresql://postgres:Cookie560688Ks!@db.yclvkgfoiqpaijvzxlix.supabase.co:5432/postgres --file forward.sql",
-    "prisma:resolveproddiff": "prisma migrate resolve --applied 20230315062726_init",
+    "prisma:resolveproddiff": "prisma migrate resolve --applied 20230318090702_initial_migration",
     "prisma:fixproddiff": "npm run prisma:getproddiff && npm run prisma:applyproddiff && npm run prisma:resolveproddiff",
     "migrate:gen": "prisma migrate dev --create-only",
     "migrate:run": "prisma migrate dev",
