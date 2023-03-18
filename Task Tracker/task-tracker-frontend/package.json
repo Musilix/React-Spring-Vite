@@ -4,7 +4,7 @@
   "main": "assets/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "npm run prisma:resolveproddiff && vite build",
+    "build": "vite build",
     "preview:vite": "vite preview",
     "comment": "Netlify dev command is necessary here, as the vite dev command doesnt build out our netlify serverless functions that we need",
     "dev:netlify": "netlify dev",
