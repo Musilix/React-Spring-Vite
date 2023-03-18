@@ -7,8 +7,9 @@
 
 [build]
   # Run any pending migrations to update the db, then build project out
-  command = "npm run migrate:prod && npm run build"
-
+  # command = "npm run migrate:prod && npm run build"
+  command = "npm run build"
+  
   functions = "functions/"
 
   # IM SO RIDICULOUS
