@@ -104,7 +104,7 @@ function App() {
     } else if (type === "inc") {
       incrementTaskGoal(dispatch, baseGoal.amt);
     } else if (type === "reset") {
-      resetTaskGoal(dispatch);
+      resetTaskGoal(dispatch, baseGoal.amt);
     }
   };
 

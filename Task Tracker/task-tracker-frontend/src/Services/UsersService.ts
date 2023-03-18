@@ -24,39 +24,41 @@ const setTotalJobs = async (
 };
 
 const incrementTaskGoal = async (dispatch: Function, currTaskGoal: number) => {
+  // To update the UI fast, dispatch an inc type action before we've updated the db. we assume the db will be succesful.
+  dispatch({ type: "inc" });
   await fetch(
     `/.netlify/functions/setUserTaskGoal?taskGoal=${currTaskGoal + 1}`,
     {
       method: "POST",
     }
-  )
-    .then(() => {
-      dispatch({ type: "inc" });
-    })
-    .catch((e) => console.error(e));
+  ).catch((e) => {
+    // If the db call failed, decrement in the UI... kinda cryptic, but I mean... its consistent
+    dispatch({ type: "dec" });
+    console.error(e);
+  });
 };
 
 const decrementTaskGoal = async (dispatch: Function, currTaskGoal: number) => {
+  dispatch({ type: "dec" });
   await fetch(
     `/.netlify/functions/setUserTaskGoal?taskGoal=${currTaskGoal - 1}`,
     {
       method: "POST",
     }
-  )
-    .then(() => {
-      dispatch({ type: "dec" });
-    })
-    .catch((e) => console.error(e));
+  ).catch((e) => {
+    dispatch({ type: "inc" });
+    console.error(e);
+  });
 };
 
-const resetTaskGoal = async (dispatch: Function) => {
+const resetTaskGoal = async (dispatch: Function, currTaskGoal: number) => {
+  dispatch({ type: "reset" });
   await fetch(`/.netlify/functions/setUserTaskGoal?taskGoal=5`, {
     method: "POST",
-  })
-    .then(() => {
-      dispatch({ type: "reset" });
-    })
-    .catch((e) => console.error(e));
+  }).catch((e) => {
+    dispatch({ type: "init", payload: { taskGoals: currTaskGoal } });
+    console.error(e);
+  });
 };
 
 // No need to call API here; we're basically just update our baseGoal.amt state value with our dispatch method (sending in the user.count) we retrieved on component mount
