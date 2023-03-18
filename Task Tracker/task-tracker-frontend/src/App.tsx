@@ -53,6 +53,7 @@ function App() {
     async function getUserData() {
       const User: Users = await getUser();
 
+      // Set total jobs applied to + current task goal amount
       setTotalJobsApplied(User.count);
       intitializeTaskGoal(dispatch, User.currentGoal);
     }

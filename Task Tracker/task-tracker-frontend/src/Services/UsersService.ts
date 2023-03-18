@@ -62,14 +62,6 @@ const intitializeTaskGoal = async (
   currTaskGoal: number
 ) => {
   dispatch({ type: "init", payload: { taskGoals: currTaskGoal } });
-
-  // await fetch(`/.netlify/functions/setUserTaskGoal?taskGoal=${currTaskGoal}`, {
-  //   method: "POST",
-  // })
-  //   .then(() => {
-  //     dispatch({ type: "init", payload: {taskGoals: currTaskGoal}});
-  //   })
-  //   .catch((e) => console.error(e));
 };
 
 export {

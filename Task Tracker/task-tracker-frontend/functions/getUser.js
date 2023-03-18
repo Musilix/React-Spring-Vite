@@ -3,7 +3,9 @@ const prisma = new PrismaClient();
 
 exports.handler = async (event, context) => {
   try {
-    const user = await prisma.users.findFirst({ where: { id: 2 } });
+    const user = await prisma.users.findFirst({
+      where: { username: "keemkeem" },
+    });
 
     return {
       statusCode: 200,

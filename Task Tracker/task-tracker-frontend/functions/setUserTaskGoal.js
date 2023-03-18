@@ -7,7 +7,7 @@ exports.handler = async (event, context) => {
 
   try {
     await prisma.users.update({
-      where: { id: 2 },
+      where: { username: "keemkeem" },
       data: { currentGoal: Number(taskGoal) },
     });
     return {
