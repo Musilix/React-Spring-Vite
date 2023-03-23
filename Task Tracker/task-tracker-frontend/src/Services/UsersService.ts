@@ -1,12 +1,50 @@
 import { Users } from "@prisma/client";
 
-const getUser = async (): Promise<Users> => {
-  const User: Users = await fetch(`/.netlify/functions/getUser`)
+const login = async (username: string) => {
+  // const res: any = await fetch(`/.netlify/functions/login`);
+  // const signedInUser: Users = await thenable(res);
+
+  // return signedInUser;
+
+  const User: Users = await fetch(`/.netlify/functions/login`, {
+    method: "POST",
+    body: JSON.stringify({ username: username }),
+  })
     .then((res) => res.json())
     .then((data) => data)
     .catch((e) => console.error(e));
 
   return User;
+};
+
+const logout = async () => {
+  return await fetch(`/.netlify/functions/logout`, {
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => console.error(e));
+};
+
+const getUser = async (username: string): Promise<Users> => {
+  const User: Users = await fetch(
+    `/.netlify/functions/getUser?user=${username}`
+  )
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => console.error(e));
+
+  return User;
+};
+
+const getCurrentUser = async (): Promise<Users> => {
+  const user: Users = await fetch(`/.netlify/functions/getCurrentUser`, {
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .catch((e) => console.error(e));
+
+  return user;
 };
 
 const setTotalJobs = async (
@@ -69,11 +107,23 @@ const intitializeTaskGoal = async (
   dispatch({ type: "init", payload: { taskGoals: currTaskGoal } });
 };
 
+const thenable = async (res: any) => {
+  const thenned: Users = await res
+    .json()
+    .then((data: any) => data)
+    .catch((e: any) => console.error(e));
+
+  return thenned;
+};
+
 export {
   getUser,
+  getCurrentUser,
   setTotalJobs,
   incrementTaskGoal,
   decrementTaskGoal,
   resetTaskGoal,
   intitializeTaskGoal,
+  login,
+  logout,
 };

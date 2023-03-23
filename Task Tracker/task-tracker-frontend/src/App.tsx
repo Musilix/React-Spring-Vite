@@ -1,22 +1,17 @@
 import { Users } from "@prisma/client";
-import { animated, useTransition } from "@react-spring/web";
-import {
-  MutableRefObject,
-  ReactHTMLElement,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import "./App.css";
-import Loading from "./Components/Loading/Loading";
+import LoginForm from "./Components/LoginForm/LoginForm";
 import Tracker from "./Components/Tracker/Tracker";
+import { AuthContext } from "./Hooks/AuthContext";
 import TaskReducer from "./Reducers/TaskReducer";
 import {
   decrementTaskGoal,
+  getCurrentUser,
   getUser,
   incrementTaskGoal,
   intitializeTaskGoal,
+  logout,
   resetTaskGoal,
   setTotalJobs,
 } from "./Services/UsersService";
@@ -49,17 +44,25 @@ function App() {
   const [baseGoal, dispatch] = useReducer(reducer, { amt: 5 });
   const [isLoading, setIsLoading] = useState(true);
 
+  const { user, setUser } = useContext(AuthContext);
+  const [username, setUsername] = useState("");
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+
   // Initialize jobs applied for on component load
   useEffect(() => {
     async function getUserData() {
-      const User: Users = await getUser();
+      console.log(JSON.stringify(user));
+      const User: Users = (await getCurrentUser()) ?? (await getUser("jonjon"));
 
-      // Set total jobs applied to + current task goal amount
-      setTotalJobsApplied(User.count);
-      intitializeTaskGoal(dispatch, User.currentGoal);
+      if (User) {
+        setUser({ ...User });
+        // Set total jobs applied to + current task goal amount
+        setTotalJobsApplied(User.count);
+        intitializeTaskGoal(dispatch, User.currentGoal);
+      }
 
-      // Wait a quarter second after the data has loaded in before setting loading to false, just to be SURE the DOM is ready..
-      setTimeout(() => setIsLoading(false), 250);
+      // Wait about a quarter of a second after the data has loaded in before setting loading to false, just to be SURE the DOM is ready..
+      setTimeout(() => setIsLoading(false), 350);
     }
 
     getUserData();
@@ -88,20 +91,50 @@ function App() {
     setTaskAction({ type });
   };
 
+  // TODO: find a way to refactor this out
+  const handleLogout = () => {
+    // clear cookie of user
+    logout();
+    // unset user
+    setUser(null);
+  };
+
+  const showLoginModal = () => {
+    setLoginModalVisible(true);
+  };
+
   return (
     <div className="App">
-      {isLoading ? (
-        <Loading />
+      <nav>
+        <ul>
+          <li>
+            <div>
+              <a href="/">
+                <img src="/tasktracker.svg" alt="Logo Image" />
+              </a>
+            </div>
+          </li>
+          <li>
+            {user ? (
+              <button onClick={() => handleLogout()}>LOGOUT</button>
+            ) : (
+              <button onClick={() => showLoginModal()}>LOGIN</button>
+            )}
+          </li>
+        </ul>
+      </nav>
+
+      {loginModalVisible ? (
+        <LoginForm />
       ) : (
-        <>
-          <Tracker
-            handleClick={handleClick}
-            baseGoal={baseGoal}
-            totalJobsApplied={totalJobsApplied}
-            ticker={ticker}
-            taskAction={taskAction}
-          />
-        </>
+        <Tracker
+          handleClick={handleClick}
+          baseGoal={baseGoal}
+          totalJobsApplied={totalJobsApplied}
+          ticker={ticker}
+          taskAction={taskAction}
+          isLoading={isLoading}
+        />
       )}
     </div>
   );

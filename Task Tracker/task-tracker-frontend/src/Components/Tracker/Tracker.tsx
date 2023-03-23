@@ -1,5 +1,8 @@
 import { animated, useTransition } from "@react-spring/web";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../../Hooks/AuthContext";
+import Loading from "../Loading/Loading";
+import LoginForm from "../LoginForm/LoginForm";
 
 interface Goal {
   amt: number;
@@ -15,16 +18,19 @@ export default function Tracker({
   totalJobsApplied,
   ticker,
   taskAction,
+  isLoading,
 }: {
   handleClick: Function;
   baseGoal: Goal;
   totalJobsApplied: number | string;
   ticker: Object;
   taskAction: TaskAction;
+  isLoading: boolean;
 }) {
   // State for React Spring Animations
   const transition = useTransition(baseGoal.amt, ticker);
   const clickerVisualRef = useRef<HTMLObjectElement>(null);
+  const { user, setUser } = useContext(AuthContext);
 
   // Add extra styling for when daily tasks are completed
   useEffect(() => {
@@ -41,8 +47,15 @@ export default function Tracker({
     }
   }, [baseGoal.amt]);
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <>
+      <section id="tracker-header-wrap">
+        <div id="header-wrap">
+          <h2>{`You're looking at the tasks of ${user?.username}`}</h2>
+        </div>
+      </section>
       <section id="tracker-wrap" ref={clickerVisualRef}>
         <div id="spring-wrap">
           {transition((style, taskGoalAmt) => {
