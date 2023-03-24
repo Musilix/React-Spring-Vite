@@ -1,11 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient, Users } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 exports.handler = async (event, context) => {
   try {
-    const user = await prisma.users.findFirst({
-      where: { username: "keemkeem" },
-    });
+    const userToSearch = event.queryStringParameters.user;
+    const user = await getUserData(userToSearch);
 
     return {
       statusCode: 200,
@@ -21,3 +20,18 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
+async function getUserData(username) {
+  try {
+    const userToSearch = await prisma.users.findUnique({
+      where: { username: username },
+    });
+
+    return userToSearch;
+  } catch (e) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: e.message }),
+    };
+  }
+}

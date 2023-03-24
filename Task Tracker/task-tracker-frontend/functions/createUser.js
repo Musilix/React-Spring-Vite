@@ -1,7 +1,7 @@
 const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient();
 const cookie = require("cookie");
-const { __prod__ } = require("../src/constants");
+const { __cookieOptions__, __tokenOptions__ } = require("../src/constants");
 
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -9,24 +9,9 @@ require("dotenv").config();
 exports.handler = async (event, context, callback) => {
   try {
     const createdUser = await createUserInDB(event);
+    const myCookie = createUserToken(createdUser);
 
-    // Create token with user information
-    const tokenSecret = process.env.TOKEN_PRIVATE_KEY;
-    const token = jwt.sign({ uid: createdUser.id }, tokenSecret, {
-      algorithm: "RS256",
-      expiresIn: "1m",
-    });
-
-    console.log(__prod__);
-    const myCookie = cookie.serialize("uid", token, {
-      secure: __prod__,
-      httpOnly: true,
-      path: "/",
-      domain: process.env.DOMAIN,
-      maxAge: 60, // one minute
-      sameSite: "lax",
-    });
-    // return user info back to client req, with new bearer token included
+    // return user info back to client req, with new JWT included in cookie named 'uid'
     return {
       statusCode: 200,
       headers: {
@@ -48,7 +33,7 @@ exports.handler = async (event, context, callback) => {
       }
     }
     console.error(e);
-    return { statusCode: 500, body: JSON.stringify(e) };
+    return { statusCode: 500, body: JSON.stringify({ error: e.message }) };
   }
 };
 
@@ -59,4 +44,18 @@ async function createUserInDB({ body }) {
   });
 
   return createdUser;
+}
+
+function createUserToken(createdUser) {
+  // Create token with user information
+  const tokenSecret = process.env.TOKEN_PRIVATE_KEY;
+  const token = jwt.sign(
+    { uid: createdUser.id },
+    tokenSecret,
+    __tokenOptions__
+  );
+
+  const myCookie = cookie.serialize("uid", token, __cookieOptions__);
+
+  return myCookie;
 }
