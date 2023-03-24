@@ -1,0 +1,33 @@
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+nav {
+  width: 75%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  position: absolute;
+  top: 10px
+}
+
+ul {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul li {
+  padding: 20px;
+
+}
+
+ul li img {
+  width: 100px
+}
