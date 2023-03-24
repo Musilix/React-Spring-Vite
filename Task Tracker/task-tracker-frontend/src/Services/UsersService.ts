@@ -21,14 +21,32 @@ const getCurrentUser = async (): Promise<Users> => {
   return currentUser;
 };
 
-const setTotalJobs = async (
-  _totalJobsApplied: any,
-  setTotalJobsApplied: any
-) => {
-  //TODO: refactor... this is a code smell
+const login = async (username: string, password?: string) => {
+  const user = await fetch(`/.netlify/functions/login`, {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => console.error(e));
+
+  return user;
+};
+
+const logout = async () => {
+  return await fetch(`/.netlify/functions/logout`, { method: "POST" })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => console.error(e));
+};
+
+const setTotalJobs = async (setTotalJobsApplied: any, username?: any) => {
   // Update the current count of the user in the DB if the type is dec
-  await fetch(`/.netlify/functions/setUserCount`, { method: "POST" })
+  await fetch(`/.netlify/functions/setUserCount?user=${username}`, {
+    method: "POST",
+  })
     .then(() => {
+      //TODO: refactor... this is a code smell
       // Just call the state setter for the total jobs applied if this db update functio nretturns with a 200
       // Basically just emulating realtime update in UI... when they refresh, the changes will persist though
       setTotalJobsApplied((prevTotalApplied: number) => prevTotalApplied + 1);
@@ -85,6 +103,8 @@ const intitializeTaskGoal = async (
 export {
   getUser,
   getCurrentUser,
+  login,
+  logout,
   setTotalJobs,
   incrementTaskGoal,
   decrementTaskGoal,

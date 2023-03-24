@@ -1,4 +1,4 @@
-module.exports = Object.freeze({
+module.exports = {
   __prod__: process.env.NODE_ENV === "production",
   __clearCookieOptions__: {
     httpOnly: true,
@@ -20,4 +20,4 @@ module.exports = Object.freeze({
     algorithm: "RS256",
     expiresIn: "1h",
   },
-});
+};

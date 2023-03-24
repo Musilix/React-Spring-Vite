@@ -56,11 +56,11 @@ export default function Tracker() {
 
       //TODO: make this dynamic to the route we are looking at...
       const lookingAtUser: Users = await getUser("keemkeem");
-      setUserPage(lookingAtUser);
+      // setUserPage(lookingAtUser);
+      setUserPage(currUser ?? lookingAtUser);
       // Wait a quarter second after the data has loaded in before setting loading to false, just to be SURE the DOM is ready..
       setTimeout(() => setIsLoading(false), 10000);
     }
-
     getCurrentUserData();
   }, []);
 
@@ -75,7 +75,7 @@ export default function Tracker() {
     // Handling adding, removing, or resetting tasks
     if (taskAction.type === "dec") {
       if (baseGoal.amt > 0) {
-        setTotalJobs(totalJobsApplied, setTotalJobsApplied);
+        setTotalJobs(setTotalJobsApplied, userPage?.username);
       }
     }
 
@@ -112,9 +112,9 @@ export default function Tracker() {
     let User: Users = await getCurrentUser();
 
     // fall back default user to look at if no user is logged in
-    if (!User) {
-      User = await getUser("keemkeem");
-    }
+    // if (!User) {
+    //   User = await getUser("keemkeem");
+    // }
 
     return User;
   };

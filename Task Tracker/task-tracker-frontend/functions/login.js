@@ -64,7 +64,7 @@ function createUserToken(user) {
   );
 
   const cookieData = cookie.serialize("uid", token, {
-    __cookieOptions__,
+    ...__cookieOptions__,
   });
 
   return cookieData;
@@ -74,11 +74,18 @@ function checkIfUserIsLoggedIn(event) {
   const cookies = cookie.parse(event.headers.cookie || "");
   const token = cookies.uid;
 
-  if (token) {
-    const userLoggedIn = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY);
-    if (userLoggedIn && userLoggedIn.uid) {
+  if (!token) {
+    return false;
+  }
+
+  // Try to verify the token to make sure that it was valid
+  try {
+    const { uid } = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY);
+    if (uid) {
       return true;
     }
+  } catch (e) {
+    return e;
   }
 
   return false;

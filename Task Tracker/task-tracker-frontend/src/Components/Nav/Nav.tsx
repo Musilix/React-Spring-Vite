@@ -1,14 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Hooks/AuthContext";
+import { logout } from "../../Services/UsersService";
 import "./Nav.css";
-export default function Nav({
-  showLoginModal,
-  handleLogout,
-}: {
-  showLoginModal: Function;
-  handleLogout: Function;
-}) {
+
+export default function Nav({ showLoginModal }: { showLoginModal: Function }) {
   const { user } = useContext(AuthContext);
+
+  const handleLogout = (e: any) => {
+    e.preventDefault();
+
+    logout();
+    window.location.reload();
+  };
 
   return (
     <>
@@ -23,7 +26,7 @@ export default function Nav({
           </li>
           <li>
             {user ? (
-              <button onClick={() => handleLogout()}>LOGOUT</button>
+              <button onClick={(e) => handleLogout(e)}>LOGOUT</button>
             ) : (
               <button onClick={() => showLoginModal()}>LOGIN</button>
             )}

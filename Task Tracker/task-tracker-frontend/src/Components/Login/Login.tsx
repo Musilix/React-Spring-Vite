@@ -1,11 +1,23 @@
+import { Users } from "@prisma/client";
+import { useContext } from "react";
+import { AuthContext } from "../../Hooks/AuthContext";
 import useInput from "../../Hooks/useInput";
+import { login } from "../../Services/UsersService";
 
-export default function Login({ props }: { props: any }) {
+export default function Login() {
   const [username, handleUsername, resetUsername] = useInput("");
+  const { setUser } = useContext(AuthContext);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    // console.log(username);
+
+    const currUser: Users = await login(username);
+
+    if (currUser) {
+      setUser(currUser);
+      resetUsername();
+      window.location.reload();
+    }
   };
 
   return (

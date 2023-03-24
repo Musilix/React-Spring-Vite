@@ -4,8 +4,11 @@ const cookie = require("cookie");
 const { __clearCookieOptions__ } = require("../src/constants");
 
 exports.handler = async (event, context) => {
+  console.log(JSON.stringify(__clearCookieOptions__));
+
   const userCookie = cookie.parse(event.headers.cookie || "");
   const token = userCookie.uid;
+  console.log(token);
 
   if (!token) {
     return {
@@ -15,7 +18,9 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const emptyCookie = cookie.serialize("uid", "", __clearCookieOptions__);
+  const emptyCookie = cookie.serialize("uid", "", {
+    ...__clearCookieOptions__,
+  });
 
   return {
     statusCode: 200,
