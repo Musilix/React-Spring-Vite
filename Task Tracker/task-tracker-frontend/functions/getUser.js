@@ -4,7 +4,6 @@ const prisma = PrismaDataSource.getInstance();
 exports.handler = async (event, context) => {
   try {
     const userToSearch = event.queryStringParameters.user;
-    console.log(userToSearch);
     const user = await getUserData(userToSearch);
 
     return {

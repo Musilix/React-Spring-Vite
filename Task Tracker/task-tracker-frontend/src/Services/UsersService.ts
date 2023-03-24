@@ -7,7 +7,6 @@ const getUser = async (username?: string): Promise<Users> => {
     .then((res) => res.json())
     .then((data) => data)
     .catch((e) => console.error(e));
-
   return User;
 };
 
