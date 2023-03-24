@@ -1,33 +1,81 @@
+import { Users } from "@prisma/client";
 import { animated, useTransition } from "@react-spring/web";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { LoadingContext } from "../../Hooks/LoadingContext";
+import TaskReducer from "../../Reducers/TaskReducer";
+import {
+  decrementTaskGoal,
+  getCurrentUser,
+  getUser,
+  incrementTaskGoal,
+  intitializeTaskGoal,
+  resetTaskGoal,
+  setTotalJobs,
+} from "../../Services/UsersService";
+import Loading from "../Loading/Loading";
 
-interface Goal {
-  amt: number;
-}
+const tickerUp = {
+  keys: null,
+  config: { duration: 200 },
+  from: { opacity: 0, top: -100 },
+  enter: { opacity: 1, top: 0 },
+  leave: { opacity: 0, top: 100 },
+};
 
-interface TaskAction {
-  type: string;
-}
+const tickerDown = {
+  keys: null,
+  config: { duration: 200 },
+  from: { opacity: 0, top: 100 },
+  enter: { opacity: 1, top: 0 },
+  leave: { opacity: 0, top: -100 },
+};
 
-export default function Tracker({
-  handleClick,
-  baseGoal,
-  totalJobsApplied,
-  ticker,
-  taskAction,
-}: {
-  handleClick: Function;
-  baseGoal: Goal;
-  totalJobsApplied: number | string;
-  ticker: Object;
-  taskAction: TaskAction;
-}) {
+export default function Tracker() {
+  const reducer = TaskReducer;
+
+  const [ticker, setTicker] = useState(tickerUp);
+  const [baseGoal, dispatch] = useReducer(reducer, { amt: 5 });
+  const [totalJobsApplied, setTotalJobsApplied]: [number | string, Function] =
+    useState("...");
+  const [taskAction, setTaskAction] = useState({ type: "" });
+
   // State for React Spring Animations
   const transition = useTransition(baseGoal.amt, ticker);
   const clickerVisualRef = useRef<HTMLObjectElement>(null);
 
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+
+  // Initialize jobs applied for on component load
+  useEffect(() => {
+    async function getCurrentUserData() {
+      // Get the current user using their cookie, and set the total jobs applied and task goal to their current count
+      let User: Users = await getCurrentUser();
+
+      // fall back default user to look at if no user is logged in
+      if (!User) {
+        User = await getUser("keemkeem");
+      }
+
+      // Set total jobs applied to + current task goal amount
+      setTotalJobsApplied(User.count);
+      intitializeTaskGoal(dispatch, User.currentGoal);
+
+      // Wait a quarter second after the data has loaded in before setting loading to false, just to be SURE the DOM is ready..
+      setTimeout(() => setIsLoading(false), 300);
+    }
+
+    getCurrentUserData();
+  }, []);
+
   // Add extra styling for when daily tasks are completed
   useEffect(() => {
+    // Handling adding, removing, or resetting tasks
+    if (taskAction.type === "dec") {
+      if (baseGoal.amt > 0) {
+        setTotalJobs(totalJobsApplied, setTotalJobsApplied);
+      }
+    }
+
     if (clickerVisualRef.current) {
       if (baseGoal.amt === 0) {
         clickerVisualRef.current.style.backgroundColor = "rgb(0 255 43 / .5%)";
@@ -41,7 +89,24 @@ export default function Tracker({
     }
   }, [baseGoal.amt]);
 
-  return (
+  const handleClick = (type: string) => {
+    // Real DB connectors for not updating UI, but updating the real data
+    if (type === "dec") {
+      ticker !== tickerDown ? setTicker(tickerDown) : "";
+      decrementTaskGoal(dispatch, baseGoal.amt);
+    } else if (type === "inc") {
+      ticker !== tickerUp ? setTicker(tickerUp) : "";
+      incrementTaskGoal(dispatch, baseGoal.amt);
+    } else if (type === "reset") {
+      resetTaskGoal(dispatch, baseGoal.amt);
+    }
+
+    setTaskAction({ type });
+  };
+
+  return isLoading ? (
+    <Loading />
+  ) : (
     <>
       <section id="tracker-wrap" ref={clickerVisualRef}>
         <div id="spring-wrap">

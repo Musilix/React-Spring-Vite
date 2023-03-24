@@ -1,22 +1,18 @@
 import { createContext, useState } from "react";
 
 interface LoadingContextProps {
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
 }
 
-const LoadingContext = createContext<LoadingContextProps>({
-  loading: false,
-  setLoading: (loading: boolean) => {},
+export const LoadingContext = createContext<LoadingContextProps>({
+  isLoading: false,
+  setIsLoading: (loading: boolean) => {},
 });
 
-export default function LoadingProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const values = { loading, setLoading };
+export function LoadingProvider({ children }: { children: React.ReactNode }) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const values = { isLoading, setIsLoading };
 
   return (
     <LoadingContext.Provider value={values}>{children}</LoadingContext.Provider>

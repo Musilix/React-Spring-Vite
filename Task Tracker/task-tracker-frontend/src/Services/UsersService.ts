@@ -1,7 +1,9 @@
 import { Users } from "@prisma/client";
 
-const getUser = async (): Promise<Users> => {
-  const User: Users = await fetch(`/.netlify/functions/getUser`)
+const getUser = async (username?: string): Promise<Users> => {
+  const User: Users = await fetch(
+    `/.netlify/functions/getUser?user=${username}`
+  )
     .then((res) => res.json())
     .then((data) => data)
     .catch((e) => console.error(e));
@@ -10,10 +12,12 @@ const getUser = async (): Promise<Users> => {
 };
 
 const getCurrentUser = async (): Promise<Users> => {
-  const currentUser: Users = await fetch(`/.netlify/functions/getCurrentUser`)
+  const currentUser: Users = await fetch(`/.netlify/functions/getCurrentUser`, {
+    method: "GET",
+  })
     .then((res) => res.json())
     .then((data) => data)
-    .catch((e) => console.error(e));
+    .catch(() => null);
 
   return currentUser;
 };
@@ -22,6 +26,7 @@ const setTotalJobs = async (
   _totalJobsApplied: any,
   setTotalJobsApplied: any
 ) => {
+  //TODO: refactor... this is a code smell
   // Update the current count of the user in the DB if the type is dec
   await fetch(`/.netlify/functions/setUserCount`, { method: "POST" })
     .then(() => {
@@ -80,6 +85,7 @@ const intitializeTaskGoal = async (
 
 export {
   getUser,
+  getCurrentUser,
   setTotalJobs,
   incrementTaskGoal,
   decrementTaskGoal,
