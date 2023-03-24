@@ -1,5 +1,6 @@
-const { PrismaClient, Prisma } = require("@prisma/client");
-const prisma = new PrismaClient();
+const { Prisma } = require("@prisma/client");
+const PrismaDataSource = require("../lib/database/PrismaDataSource");
+const prisma = PrismaDataSource.getInstance();
 const cookie = require("cookie");
 const { __cookieOptions__, __tokenOptions__ } = require("../src/constants");
 

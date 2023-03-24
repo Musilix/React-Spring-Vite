@@ -1,8 +1,8 @@
 // netlify function that will take a users request body and use the username to login and generate a cookie
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const PrismaDataSource = require("../lib/database/PrismaDataSource");
+const prisma = PrismaDataSource.getInstance();
 const { __cookieOptions__, __tokenOptions__ } = require("../src/constants");
 
 exports.handler = async (event, context) => {

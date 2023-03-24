@@ -2,19 +2,20 @@
 // then use the uid from the cookie to retrieve tthe user's data from the database using prisma
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const PrismaDataSource = require("../lib/database/PrismaDataSource");
+const prisma = PrismaDataSource.getInstance();
 
 exports.handler = async function (event, context) {
   const cookies = cookie.parse(event.headers.cookie || "");
   const token = cookies.uid;
 
-  if (!token)
+  if (!token) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "application/json" },
-      body: "You're not logged in!",
+      body: null,
     };
+  }
 
   try {
     const cookieData = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY);

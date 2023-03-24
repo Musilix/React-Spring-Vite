@@ -1,6 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
+const PrismaDataSource = require("../lib/database/PrismaDataSource");
 
-const prisma = new PrismaClient();
+const prisma = new PrismaDataSource.getInstance().prisma;
 
 exports.handler = async (event, context, callback) => {
   const user = await prisma.users.findUnique({

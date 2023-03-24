@@ -1,9 +1,10 @@
-const { PrismaClient, Users } = require("@prisma/client");
-const prisma = new PrismaClient();
+const PrismaDataSource = require("../lib/database/PrismaDataSource");
+const prisma = PrismaDataSource.getInstance();
 
 exports.handler = async (event, context) => {
   try {
     const userToSearch = event.queryStringParameters.user;
+    console.log(userToSearch);
     const user = await getUserData(userToSearch);
 
     return {
