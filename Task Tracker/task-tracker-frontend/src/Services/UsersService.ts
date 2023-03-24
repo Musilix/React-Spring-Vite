@@ -9,6 +9,15 @@ const getUser = async (): Promise<Users> => {
   return User;
 };
 
+const getCurrentUser = async (): Promise<Users> => {
+  const currentUser: Users = await fetch(`/.netlify/functions/getCurrentUser`)
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((e) => console.error(e));
+
+  return currentUser;
+};
+
 const setTotalJobs = async (
   _totalJobsApplied: any,
   setTotalJobsApplied: any
