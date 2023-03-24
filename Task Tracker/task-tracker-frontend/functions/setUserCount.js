@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 // and make surethe current users cookie matches the username
 // if not, return an error
 exports.handler = async (event, context) => {
-  const querystring = event.queryStringParameters.user;
+  const userToUpdate = event.queryStringParameters.user;
 
   // grab the users "uid" cookie -if it exists - and then clear said cookie
   //TODO: this is a duplicate of the function in logout.js - abstract out to a util/lib
@@ -26,17 +26,18 @@ exports.handler = async (event, context) => {
   try {
     const { uid } = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY);
 
-    const userToDoUpdate = getCurrUser(uid);
+    const userToDoUpdate = await getCurrUser(uid);
 
-    updateUserCount(userToUpdate, userToDoUpdate);
+    return updateUserCount(userToUpdate, userToDoUpdate);
   } catch (e) {
     return e;
   }
 };
 
 async function updateUserCount(userToUpdate, userToDoUpdate) {
+  console.log(userToUpdate, userToDoUpdate);
   // Quick check to make sure we aren't updating another user's count
-  if (userToUpdate === userToDoUpdate) {
+  if (userToUpdate !== userToDoUpdate) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "application/json" },
@@ -47,7 +48,7 @@ async function updateUserCount(userToUpdate, userToDoUpdate) {
   try {
     await prisma.users.update({
       where: {
-        username: username,
+        username: userToUpdate,
       },
       data: {
         count: {
