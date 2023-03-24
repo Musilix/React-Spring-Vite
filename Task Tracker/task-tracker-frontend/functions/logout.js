@@ -17,7 +17,8 @@ exports.handler = async (event, context) => {
       body: "You're already logged out!",
     };
   }
-
+  // FUTURE NOTE: this johns  is ridiculous.
+  // for some reason, the cookie.serialize function doesn't like the __cookieOptions__ object unless I spread it
   const emptyCookie = cookie.serialize("uid", "", {
     ...__clearCookieOptions__,
   });

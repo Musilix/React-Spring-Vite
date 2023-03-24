@@ -63,6 +63,8 @@ function createUserToken(user) {
     __tokenOptions__
   );
 
+  // FUTURE NOTE: this johns  is ridiculous.
+  // for some reason, the cookie.serialize function doesn't like the __cookieOptions__ object unless I spread it
   const cookieData = cookie.serialize("uid", token, {
     ...__cookieOptions__,
   });

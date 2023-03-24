@@ -2,7 +2,7 @@ import { Users } from "@prisma/client";
 import { animated, useTransition } from "@react-spring/web";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import { AuthContext } from "../../Hooks/AuthContext";
-import { LoadingContext } from "../../Hooks/LoadingContext";
+import { useLoading } from "../../Hooks/useLoading";
 import TaskReducer from "../../Reducers/TaskReducer";
 import {
   decrementTaskGoal,
@@ -45,7 +45,7 @@ export default function Tracker() {
   const transition = useTransition(baseGoal.amt, ticker);
   const clickerVisualRef = useRef<HTMLObjectElement>(null);
 
-  const { isLoading, setIsLoading } = useContext(LoadingContext);
+  const { isLoading, setLoading } = useLoading();
   const { user, setUser } = useContext(AuthContext);
 
   // Initialize jobs applied for on component load
@@ -58,8 +58,9 @@ export default function Tracker() {
       const lookingAtUser: Users = await getUser("keemkeem");
       // setUserPage(lookingAtUser);
       setUserPage(currUser ?? lookingAtUser);
+
       // Wait a quarter second after the data has loaded in before setting loading to false, just to be SURE the DOM is ready..
-      setTimeout(() => setIsLoading(false), 10000);
+      setTimeout(() => setLoading(false), 500);
     }
     getCurrentUserData();
   }, []);
@@ -119,8 +120,13 @@ export default function Tracker() {
     return User;
   };
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <>
+      {userPage && !user && (
+        <h3>{`You're looking at the task tracker of ${userPage.username}`}</h3>
+      )}
       <section id="tracker-wrap" ref={clickerVisualRef}>
         <div id="spring-wrap">
           {transition((style, taskGoalAmt) => {
