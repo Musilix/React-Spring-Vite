@@ -6,7 +6,7 @@ A sandbox for working with Vite and React Spring to build static and ssr sites
 ### <code>React/Vite + React Spring Frontend, Netlify Serverless Functions, Prisma</code>
 
 <samp align="left">
-  <img align="left" src="https://github.com/Musilix/React-Spring-Vite/blob/main/assets/tasktracker.png" width="600" alt="Task Tracker Preview Image">
+  <img align="left" src="https://github.com/Musilix/React-Spring-Vite/blob/main/assets/X6tUWz8P3d.png" width="600" alt="Task Tracker Preview Image">
   <blockquote>
   Task tracker is a basic application I made to keep track how many jobs I was applying to per day as well as keep a daily goal. It abstracts out a persons daily goals into simple tasks.
   <br/><br/>
